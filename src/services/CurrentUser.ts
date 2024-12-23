@@ -1,12 +1,15 @@
 import Container, { Service } from "typedi";
 import { JwtPayload } from "../models/jwtPayloadModel";
-import { DI_KEYS } from "../constants/diKeys";
 
 @Service()
 export class CurrentUserService {
+    key = '_____CURRENT_USER_____';
+    setCurrentUser(user: JwtPayload): void {
+        Container.set(this.key, user);
+    }
 	getCurrentUser(): JwtPayload | null {
-		return Container.has<JwtPayload>(DI_KEYS.CURRENT_USER)
-			? Container.get<JwtPayload>(DI_KEYS.CURRENT_USER)
+		return Container.has<JwtPayload>(this.key)
+			? Container.get<JwtPayload>(this.key)
 			: null;
 	}
 }

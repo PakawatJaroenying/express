@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { Container } from "typedi";
-import { DI_KEYS } from "../constants/diKeys";
 import { JwtPayload } from "../models/jwtPayloadModel";
+import { CurrentUserService } from "../services/CurrentUser";
 
+const currentUserService = Container.get(CurrentUserService);
 
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction):  void => {
@@ -18,8 +19,8 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
 
         // Inject user into DI Container
-        Container.set(DI_KEYS.CURRENT_USER, decoded);
-
+        currentUserService.setCurrentUser(decoded);
+        
         next();
     } catch (error) {
         console.error(error);
