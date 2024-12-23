@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { Container } from "typedi";
 import { JwtPayload } from "../models/jwtPayloadModel";
 import { CurrentUserService } from "../services/CurrentUser";
+import { errorResponse } from "../utils/ApiResponse";
 
 const currentUserService = Container.get(CurrentUserService);
 
@@ -11,7 +12,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            res.status(401).json({ message: "Unauthorized" });
+            errorResponse(res, "Unauthorized", 401);
             return;
         }
 
@@ -24,6 +25,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction):
         next();
     } catch (error) {
         console.error(error);
-        res.status(401).json({ message: "Invalid token" });
+        errorResponse(res, "Unauthorized", 401);
     }
 };
